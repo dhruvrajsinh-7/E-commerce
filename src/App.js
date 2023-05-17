@@ -1,74 +1,79 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Switch,
-   Route
-} from "react-router-dom";
-import Header from './common/header/Header';
-import Pages from './pages/Pages';
-import Data from './component/Data';
-import Cart from './common/Cart/Cart';
-import Sdata from './component/shops/Sdata';
-import Footer from './common/Footer/Footer';
-import Dashboard from './component/Dashboard/Dashboard';
-import Preferences from './component/Preferences/Preferences';
-import useToken from './component/App/useToken';
-import Login from './component/Login/Login';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Header from "./common/header/Header";
+import Pages from "./pages/Pages";
+import Data from "./component/Data";
+import Cart from "./common/Cart/Cart";
+import Sdata from "./component/shops/Sdata";
+import Footer from "./common/Footer/Footer";
+import Dashboard from "./component/Dashboard/Dashboard";
+import Preferences from "./component/Preferences/Preferences";
 const App = () => {
-  const {productItems}=Data
-  const {shopItems}=Sdata
-  const [cardItem,setCardItem]=useState([])
+  const { productItems } = Data;
+  const { shopItems } = Sdata;
+  const [cardItem, setCardItem] = useState([]);
   // const [token, setToken] = useState();
-  
-  const { token, setToken } = useToken();
-  if(!token) {
-    return <Login setToken={setToken} />
-  }
-  const addtocart =(product)=>{
-    const prductexit = cardItem.find((item)=> item.id === product.id)
-    if(prductexit)
-    {
-      setCardItem(cardItem.map((item)=>(
-        item.id===product.id? {...prductexit,qty: prductexit.qty+1}:item)))
-    }else{
-      setCardItem([...cardItem,{...product,qty:1}])
-    }
-  }
-  const decreaseQty=(product)=>{
-    const prductexit = cardItem.find((item)=> item.id === product.id)
-    if (prductexit.qty === 1) {
-      setCardItem(cardItem.filter((item) => item.id !== product.id))
+
+  const addtocart = (product) => {
+    const prductexit = cardItem.find((item) => item.id === product.id);
+    if (prductexit) {
+      setCardItem(
+        cardItem.map((item) =>
+          item.id === product.id
+            ? { ...prductexit, qty: prductexit.qty + 1 }
+            : item
+        )
+      );
     } else {
-      setCardItem(cardItem.map((item) => (item.id === product.id ? { ...prductexit, qty: prductexit.qty - 1 } : item)))
+      setCardItem([...cardItem, { ...product, qty: 1 }]);
     }
-  }
-  
+  };
+  const decreaseQty = (product) => {
+    const prductexit = cardItem.find((item) => item.id === product.id);
+    if (prductexit.qty === 1) {
+      setCardItem(cardItem.filter((item) => item.id !== product.id));
+    } else {
+      setCardItem(
+        cardItem.map((item) =>
+          item.id === product.id
+            ? { ...prductexit, qty: prductexit.qty - 1 }
+            : item
+        )
+      );
+    }
+  };
+
   return (
     <>
-        <Router>
+      <Router>
         <Header cardItem={cardItem} />
         <Switch>
           <Route path="/" exact>
-            <Pages  productItems={productItems} addtocart={addtocart} shopItems={shopItems}
+            <Pages
+              productItems={productItems}
+              addtocart={addtocart}
+              shopItems={shopItems}
             />
           </Route>
           <Route path="/Cart" exact>
-            <Cart cardItem={cardItem} addtocart={addtocart} decreaseQty={decreaseQty}
+            <Cart
+              cardItem={cardItem}
+              addtocart={addtocart}
+              decreaseQty={decreaseQty}
             />
           </Route>
-           <Route path="/dashboard">
+          <Route path="/dashboard">
             <Dashboard />
           </Route>
           <Route path="/preferences">
             <Preferences />
           </Route>
         </Switch>
-        <Footer/>
-
-        </Router>
+        <Footer />
+      </Router>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
